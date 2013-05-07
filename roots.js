@@ -8,16 +8,16 @@ var pr = new Float64Array(1024)
 var pi = new Float64Array(1024)
 
 
-function solve(n, n_iters, tolerance, z) {
-  var m = z.length
+function solve(n, n_iters, tolerance, zr, zi) {
+  var m = zr.length
   var i, j, k, a, b, na, nb, pa, pb, qa, qb, k1, k2, k3, s1, s2, t, d
   var max = Math.max, abs = Math.abs
   for(i=0; i<n_iters; ++i) {
     d = 0.0
     for(j=0; j<m; ++j) {
       //Read in zj
-      pa = z[j][0]
-      pb = z[j][1]
+      pa = zr[j]
+      pb = zi[j]
       
       //Compute denominator
       //
@@ -29,8 +29,8 @@ function solve(n, n_iters, tolerance, z) {
         if(k === j) {
           continue
         }
-        qa = pa - z[k][0]
-        qb = pb - z[k][1]
+        qa = pa - zr[k]
+        qb = pb - zi[k]
         if(abs(qa) < EPSILON || abs(qb) < EPSILON) {
           continue
         }
@@ -72,8 +72,8 @@ function solve(n, n_iters, tolerance, z) {
       qa = k1 - k3
       qb = k1 + k2
       
-      z[j][0] = pa - qa
-      z[j][1] = pb - qb
+      zr[j] = pa - qa
+      zi[j] = pb - qb
       
       d = max(d, max(abs(qa), abs(qb)))
     }
@@ -83,10 +83,10 @@ function solve(n, n_iters, tolerance, z) {
       break
     }
   }
-  return z
+  return [ zr, zi ]
 }
 
-function findRoots(r_coeff, i_coeff, n_iters, tolerance, z) {
+function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
   var n = r_coeff.length, i
   if(n <= 1) {
     return []
@@ -128,19 +128,26 @@ function findRoots(r_coeff, i_coeff, n_iters, tolerance, z) {
     tolerance = 1e-6
   }
   //Pick default initial guess if unspecified
-  if(!z) {
-    z = new Array(n-1)
+  if(!zr) {
+    zr = new Array(n-1)
+    zi = new Array(n-1)
     var a = 1.0, b = 0.0, k1, k2, k3
     for(i=0; i<n-1; ++i) {
-      z[i] = [a, b]
+      zr[i] = a
+      zi[i] = b
       k1 = 0.4 * (a + b)
       k2 = a * 0.5
       k3 = b * 1.3
       a = k1 - k3
       b = k1 + k2
     }
+  } else if(!zi) {
+    zi = new Array(zr.length)
+    for(i=0; i<zi.length; ++i) {
+      zi[i] = 0.0
+    }
   }
-  return solve(n, n_iters, tolerance, z)
+  return solve(n, n_iters, tolerance, zr, zi)
 }
 
 module.exports = findRoots
