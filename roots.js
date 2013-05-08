@@ -8,9 +8,19 @@ var pr = new Float64Array(1024)
 var pi = new Float64Array(1024)
 
 
+function near(a, b, c, d, tol) {
+  var qa = a - c
+  var qb = b - d
+  var r = qa * qa + qb * qb
+  if(r * r < tol) {
+    return true
+  }
+  return false
+}
+
 function solve(n, n_iters, tolerance, zr, zi) {
   var m = zr.length
-  var i, j, k, a, b, na, nb, pa, pb, qa, qb, k1, k2, k3, s1, s2, t, d
+  var i, j, k, a, b, na, nb, pa, pb, qa, qb, k1, k2, k3, s1, s2, t, d, r
   var max = Math.max, abs = Math.abs
   for(i=0; i<n_iters; ++i) {
     d = 0.0
@@ -31,7 +41,7 @@ function solve(n, n_iters, tolerance, zr, zi) {
         }
         qa = pa - zr[k]
         qb = pb - zi[k]
-        if(abs(qa) < EPSILON || abs(qb) < EPSILON) {
+        if(qa * qa + qb * qb < tolerance) {
           continue
         }
         k1 = qa * (a + b)
@@ -53,6 +63,7 @@ function solve(n, n_iters, tolerance, zr, zi) {
         na = k1 - k3 + pr[k]
         nb = k1 + k2 + pi[k]
       }
+      
       
       //Compute reciprocal
       k1 = a*a + b*b
@@ -83,7 +94,48 @@ function solve(n, n_iters, tolerance, zr, zi) {
       break
     }
   }
+  
+  //Post process: Combine any repeated roots
+  var count
+  for(i=0; i<m; ++i) {
+    count = 1
+    a = zr[i]
+    b = zi[i]
+    for(j=0; j<m; ++j) {
+      if(i === j) {
+        continue
+      }
+      if(near(zr[i], zi[i], zr[j], zi[j], tolerance)) {
+        ++count
+        a += zr[j]
+        b += zi[j]
+      }
+    }
+    if(count > 1) {
+      a /= count
+      b /= count
+      for(j=0; j<m; ++j) {
+        if(i === j) {
+          continue
+        }
+        if(near(zr[i], zi[i], zr[j], zi[j], tolerance)) {
+          zr[j] = a
+          zi[j] = b
+        }
+      }
+      zr[i] = a
+      zi[i] = b
+    }
+  }
   return [ zr, zi ]
+}
+
+function bound(n) {
+  var i, b = 0.0
+  for(i=0; i<n; ++i) {
+    b = Math.max(b, pr[i] * pr[i] + pi[i] * pi[i])
+  }
+  return 1.0 + Math.sqrt(b)
 }
 
 function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
@@ -104,9 +156,10 @@ function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
       pi[i] = 0.0
     }
   } else {
-    pi[i] = i_coeff[i]
+    for(i=0; i<n; ++i) {
+      pi[i] = i_coeff[i]
+    }
   }
-  
   //Rescale coefficients
   var a = pr[n-1], b = pi[n-1]
   var d = a*a + b*b
@@ -120,9 +173,10 @@ function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
     pr[i] = k1 - k3
     pi[i] = k1 + k2
   }
-  
+  pr[n-1] = 1.0
+  pi[n-1] = 0.0
   if(!n_iters) {
-    n_iters = n * n * n
+    n_iters = 100 * n
   }
   if(!tolerance) {
     tolerance = 1e-6
@@ -131,15 +185,12 @@ function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
   if(!zr) {
     zr = new Array(n-1)
     zi = new Array(n-1)
-    var a = 1.0, b = 0.0, k1, k2, k3
+    var r = bound(n), t, c
     for(i=0; i<n-1; ++i) {
-      zr[i] = a
-      zi[i] = b
-      k1 = 0.4 * (a + b)
-      k2 = a * 0.5
-      k3 = b * 1.3
-      a = k1 - k3
-      b = k1 + k2
+      t = Math.random() * r
+      c = Math.cos(Math.random() * 2 * Math.PI)
+      zr[i] = t * c
+      zi[i] = t * Math.sqrt(1.0 - c*c)
     }
   } else if(!zi) {
     zi = new Array(zr.length)

@@ -24,14 +24,14 @@ for(var i=0; i<roots.length; ++i) {
 // Prints:
 //  1.618033988749895+0i
 //  -0.6180339887498949+0i
-
+```
 
 ## `require("durand-kerner")(r_coeff[, i_coeff, n_iters, tolerance, initial])`
 Finds the roots of a polynomial whose real coefficients are given by `r_coeff` and imaginary coefficients by `i_coeff`.
 
 * `r_coeff` - the real part of the polynomial's coefficients, stored in an array
 * `i_coeff` - the imaginary part of the polynomial's coefficients (default all 0)
-* `n_iters` - Maximum number of iterations to run before bailout. Default is `r_coeff.length^3`
+* `n_iters` - Maximum number of iterations to run before bailout. Default is `100 * n * n`
 * `tolerance` - Stopping threshold.  Default is `1e-6`
 * `initial` - Initial guess for solution vector.  This also gets the solution (optional)
 

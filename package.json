@@ -10,7 +10,9 @@
     "bit-twiddle": "~0.0.2"
   },
   "devDependencies": {
-    "tap": "~0.4.2"
+    "tap": "~0.4.2",
+    "almost-equal": "0.0.0",
+    "poly-mult": "0.0.0"
   },
   "scripts": {
     "test": "tap test/*.js"
