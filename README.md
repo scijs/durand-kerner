@@ -2,6 +2,8 @@ durand-kerner
 =============
 Finds all the roots of a polynomial by [Weierstrass' method](http://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method) (or known in Abramowitz&Stegun as the Durand-Kerner method).  This is basically a generalization of Newton's method that works for multiple roots.
 
+[![build status](https://secure.travis-ci.org/scijs/durand-kerner.png)](http://travis-ci.org/scijs/durand-kerner)
+
 # Example
 
 To find the roots for `1 + 1*x - 1*x^2`:
