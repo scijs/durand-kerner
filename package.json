@@ -1,27 +1,28 @@
 {
   "name": "durand-kerner",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Finds multiple roots of polynomials using Weierstrass' method",
   "main": "roots.js",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "bit-twiddle": "~0.0.2"
+    "next-pow-2": "^1.0.0"
   },
   "devDependencies": {
-    "tap": "~0.4.2",
-    "almost-equal": "0.0.0",
+    "tape": "^4.0.0",
+    "almost-equal": "^1.0.0",
     "poly-mult": "0.0.0"
   },
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mikolalysenko/durand-kerner.git"
+    "url": "git://github.com/scijs/durand-kerner.git"
   },
   "keywords": [
+    "scijs",
     "root",
     "polynomial",
     "weierstrass",
@@ -38,5 +39,8 @@
   "author": "Mikola Lysenko",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "d3acb633d8b285c040b041d604c45b44a43d035a"
+  "gitHead": "d3acb633d8b285c040b041d604c45b44a43d035a",
+  "bugs": {
+    "url": "https://github.com/scijs/durand-kerner/issues"
+  }
 }

@@ -14,7 +14,7 @@ function hasRoot(a, b, zr, zi) {
   return false
 }
 
-require("tap").test("durand-kerner", function(t) {
+require("tape")("durand-kerner", function(t) {
   
   function runTest(pr, pi, zr, zi) {
     var res = roots(pr, pi)

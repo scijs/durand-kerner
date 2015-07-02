@@ -2,7 +2,7 @@
 
 var EPSILON = 1e-8
 
-var bits = require("bit-twiddle")
+var nextPow2 = require("next-pow-2")
 
 var pr = new Float64Array(1024)
 var pi = new Float64Array(1024)
@@ -144,7 +144,7 @@ function findRoots(r_coeff, i_coeff, n_iters, tolerance, zr, zi) {
     return []
   }
   if(pr.length < n) {
-    var nl = bits.nextPow2(n)
+    var nl = nextPow2(n)
     pr = new Float64Array(nl)
     pi = new Float64Array(nl)
   }
